@@ -19,21 +19,15 @@
  *
 */
 declare(strict_types=1);
-
 namespace AutoClearLagg;
-
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
-
 class Main extends PluginBase{
-
-    /** @var Config $settings */
     public $settings;
-
     public function onEnable(): void{
         @mkdir($this->getDataFolder());
         $this->saveResource("settings.yml");
@@ -41,11 +35,10 @@ class Main extends PluginBase{
         if(is_numeric($this->settings->get("seconds"))){
             $this->getScheduler()->scheduleRepeatingTask(new TimerTask($this, (int) $this->settings->get("seconds")), 20);
         }else{
-            $this->getLogger()->error("Plugin Disabled! Please enter a number for the seconds");
+            $this->getLogger()->error("plugin has been disabled enter a valid number for seconds");
             $this->getServer()->getPluginManager()->disablePlugin($this);
         }
     }
-
     public function clearItems(){
         $i = 0;
         foreach($this->getServer()->getLevels() as $level){
@@ -58,9 +51,8 @@ class Main extends PluginBase{
         }
         $message = $this->settings->get("items-cleared-message");
         $message = str_replace("{COUNT}", $i, $message);
-        $this->getServer()->broadcastMessage($message);
+        $this->getServer()->sendMessage($message);
     }
-
     public function clearMobs(){
         $i = 0;
         foreach($this->getServer()->getLevels() as $level){
@@ -73,6 +65,6 @@ class Main extends PluginBase{
         }
         $message = $this->settings->get("mobs-cleared-message");
         $message = str_replace("{COUNT}", $i, $message);
-        $this->getServer()->broadcastMessage($message);
+        $this->getServer()->sendMessage($message);
     }
 }
